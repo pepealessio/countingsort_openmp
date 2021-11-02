@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Course:           High Performance Computing
+# A.Y:              2021/22
+# Lecturer:         Francesco Moscato           fmoscato@unisa.it
+
+# Team:
+# Alessio Pepe          0622701463      a.pepe108@studenti.unisa.it
+# Teresa Tortorella     0622701507      t.tortorella3@studenti.unisa.it
+# Paolo Mansi           0622701542      p.mansi5@studenti.unisa.it
+
+# Copyright (C) 2021 - All Rights Reserved
+
+# This file is part of Counting_Sort.
+
+# Counting_Sort is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Counting_Sort is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
+
+NMEASURES=150
+
+ARRAY_RC=(10000 100000 1000000 1000000)
+ARRAY_RANGE=(100 1000)
+ARRAY_THS=(0 1 2 4 8 16)
+TIMEFORMAT='%3U;%3E;%3S;%P'
+ARRAY_OPT=(0 1 2 3)
+
+trap "exit" INT
+
+SCRIPTPATH=$( cd -- "$(dirname "${0}")" >/dev/null 2>&1 ; pwd -P )
+
+
+if [[ -d ${SCRIPTPATH}/../measures/counting_sort ]]
+then
+	mv ${SCRIPTPATH}/../measures/counting_sort ${SCRIPTPATH}/../measures/counting_sort_$(date '+%Y-%m-%d_%H-%M-%S')
+fi
+
+for size in "${ARRAY_RC[@]}"; do
+	for range in "${ARRAY_RANGE[@]}"; do
+		for ths in "${ARRAY_THS[@]}"; do
+			for opt in "${ARRAY_OPT[@]}"; do
+			
+				ths_str=$(printf "%02d" $ths)
+				
+				# Output file
+				OUT_FILE=${SCRIPTPATH}/../measures/counting_sort/raw/size_${size}_range_${range}_threads_${ths}_opt_${opt}.csv
+			
+				mkdir -p $(dirname $OUT_FILE) 2> /dev/null
+				
+				echo "$(date '+%Y-%m-%d_%H-%M-%S')\n${ARRAY_RC[@]}\n${ARRAY_RANGE[@]}\n${ARRAY_THS[@]}\n${ARRAY_OPT[@]}" > "${SCRIPTPATH}/../measures/counting_sort/raw/info.txt"
+				
+				echo $(basename ${OUT_FILE})
+				echo "len,range,threads,time_init,time_sort,time_user,time_elapsed,time_sys,p_cpu" > ${OUT_FILE}
+				
+				for ((i = 0 ; i < ${NMEASURES}	; i++)); do
+					(time ./build/main_O${opt} ${size} ${range} ${ths} )2>&1 | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/;/g' -e 's/,/./g' -e 's/;/,/g' >> ${OUT_FILE}
+
+					# Progress bar
+					printf "\r> %d/%d %3.1d%% " $(expr ${i} + 1) ${NMEASURES} $(expr \( \( ${i} + 1 \) \* 100 \) / ${NMEASURES})
+					printf "#%.0s" $(seq -s " " 1 $(expr \( ${i} \* 40 \) / ${NMEASURES}))
+
+				done
+
+				# End Progress Bar
+				printf "\n"
+			done
+		done
+	done
+done
+
