@@ -40,6 +40,12 @@
 #include "util.h"
 
 /**
+ * @brief Comment this line if you want generate every time a random array.
+ * 
+ */
+#define FIXED_ARRAY
+
+/**
  * @brief   Initialize an array of a certain lenght with random integers in a 
  *          certain range. 
  * 
@@ -53,6 +59,10 @@
 void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value, int threads)
 {
     ELEMENT_TYPE *A_tmp = (ELEMENT_TYPE *) malloc(A_len * sizeof(ELEMENT_TYPE));
+
+    #ifdef FIXED_ARRAY
+    srand(6787678);
+    #endif
 
     #pragma omp parallel for num_threads(threads)
     for (size_t i = 0; i < A_len; i++)
