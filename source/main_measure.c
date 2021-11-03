@@ -71,6 +71,9 @@ int main(int argc, char const *argv[])
     // Compute min and max
     get_min_max(A, len, &min, &max);
 
+
+    nth = nth == 0 ? 1 : nth;
+
     // ----- Measure min_max -------
     if (nth == 0)  // Measure for seuential algorithm
     {
@@ -154,11 +157,7 @@ int main(int argc, char const *argv[])
 
     // Expected in output:
     // size, range, n_th, t_min_max, t_count_occurrance, t_populate, t_algo 
-    if (algo_num == 1)
-    {
-        time_min_max = 0;
-    }
-    printf("%d, %d, %d, %f, %f, %f, %f\n", (int) len, (int) range, (int) nth, time_min_max, time_occurrance, time_populate, time_algo);
+    printf("%d,%d,%d,%f,%f,%f,%f\n", (int) len, (int) range, (int) nth, time_min_max, time_occurrance, time_populate, time_algo);
 
     return EXIT_SUCCESS;   
 }

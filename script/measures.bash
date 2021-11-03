@@ -26,12 +26,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
-NMEASURES=10
+NMEASURES=100
 
-ARRAY_ALGO=(1 2)
-ARRAY_RC=(1 10 100)
-ARRAY_RANGE=(1 10)
-ARRAY_THS=(0 1 2)
+ARRAY_ALGO=(1)
+ARRAY_RC=(10000 100000 1000000)
+ARRAY_RANGE=(1000 10000 100000)
+ARRAY_THS=(0 1 2 4)
 ARRAY_OPT=(2)
 
 TIMEFORMAT='%3U;%3E;%3S;%P'
@@ -55,7 +55,7 @@ for algo in "${ARRAY_ALGO[@]}"; do
 					ths_str=$(printf "%02d" $ths)
 					
 					# Output file
-					OUT_FILE=${SCRIPTPATH}/../measures/raw/algo_${algo}/opt_${opt}/size_${size}/range_${range}/threads_${ths}.csv
+					OUT_FILE=${SCRIPTPATH}/../measures/raw/algo_${algo}_opt_${opt}_size_${size}_range_${range}_threads_${ths}.csv
 				
 					mkdir -p $(dirname $OUT_FILE) 2> /dev/null
 					

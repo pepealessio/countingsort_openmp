@@ -34,16 +34,16 @@ __version__ = "1.0.0"
 # ------------- Don't edit up here -------------
 
 # --------- You can edit this fields -----------
-SIZE = [10000, 100000, 1000000, 1000000]
-RANGE = [100, 1000]
-OPT_LEVEL = [0, 1, 2, 3]
-N_THREAD = [0, 1, 2, 4, 8, 16]
+ARRAY_ALGO=[1]
+ARRAY_RC=[10000, 100000, 1000000]
+ARRAY_RANGE=[1000, 10000, 100000]
+ARRAY_THS=[0, 1, 2, 4]
+ARRAY_OPT=[2]
 # ----------------------------------------------
 
 # ------------- Don't edit below here ----------
 
-RAW_FIELDS = ['len', 'range', 'threads', 'time_init', 'time_sort' ,'time_user' ,'time_elapsed' ,'time_sys' ,'p_cpu'] 
-MEASURE_ON_INDEX = 4
+RAW_FIELDS = ['size', 'range', 'n_th', 't_min_max', 't_count_occurrance', 't_populate', 't_algo'] 
 
 
 import matplotlib.pyplot as plt
@@ -51,7 +51,6 @@ import os
 import shutil
 import sys
 import numpy as np
-# from gaussian_outliers import reject_outliers
 
 
 def reject_outliers(data, index=0):
@@ -75,87 +74,98 @@ def reject_outliers(data, index=0):
 
 
 def compute_speedup(tser, tpar):
+    """Compute speedup"""
     return tser / tpar
 
 
 def compute_efficiency(tser, tpar, nth):
+    """Compute the efficiency"""
     return compute_speedup(tser, tpar) / (nth if nth != 0 else 1)
 
 
 # ---------------- Data processing --------------------------------------------------
 
 # Check if RAW data are present. If not, exit the script.
-if not( os.path.exists("measures/counting_sort/raw") ) or not(len(os.listdir("measures/counting_sort/raw")) == len(SIZE) * len(RANGE) * len(OPT_LEVEL) * len(N_THREAD) + 1) :
+if not( os.path.exists("measures/raw") ) :
     print(f"Raw measures not present. Generate it with 'bash script/measures.bash'")
     exit(1)
 
 # Create the folder containing all the processed data
-if os.path.exists("measures/counting_sort/processed"):
-    shutil.rmtree("measures/counting_sort/processed")
-os.mkdir("measures/counting_sort/processed")
+if os.path.exists("measures/processed"):
+    shutil.rmtree("measures/processed")
+os.mkdir("measures/processed")
 
 # Create the folder containing all the plots
-if os.path.exists("measures/counting_sort/plots"):
-    shutil.rmtree("measures/counting_sort/plots")
-os.mkdir("measures/counting_sort/plots")
+if os.path.exists("measures/plots"):
+    shutil.rmtree("measures/plots")
+os.mkdir("measures/plots")
 
-# Loop for each (size, optimization) couple
-for size_index, size in enumerate(SIZE):
-    for range_index, range in enumerate(RANGE):
-        for opt_index, opt in enumerate(OPT_LEVEL):
+for algo in ARRAY_ALGO:
+    for time_i, time in enumerate(RAW_FIELDS[3:]):
 
-            # Print help
-            print("Elaborating measured for size={}, range={} and optimization={} - #{} of {}.".format(size, range, opt, 1+size_index*len(RANGE)*len(OPT_LEVEL)+range_index*len(OPT_LEVEL)+opt_index, len(SIZE)*len(RANGE)*len(OPT_LEVEL)))
+        measure_on_index = 3 + time_i
 
-            # Compute refined measure for current size
-            measures = np.zeros(shape=(len(N_THREAD), len(RAW_FIELDS)+2))
+        # Loop for each (size, optimization) couple
+        for opt_i, opt in enumerate(ARRAY_OPT):
+            for size_i, size in enumerate(ARRAY_RC):
+                for range_i, rng in enumerate(ARRAY_RANGE):
 
-            for n_tx_index, n_th in enumerate(N_THREAD):
-                # Now open files and evaluate results
-                measure = np.genfromtxt(f"measures/counting_sort/raw/size_{size}_range_{range}_threads_{n_th}_opt_{opt}.csv", delimiter=',', invalid_raise = False)
-                measure = reject_outliers(measure[1:, :], MEASURE_ON_INDEX)
-                measure = np.sum(measure[:, :], axis=0) / (measure.shape[0])
-                
-                measures[n_tx_index, :-2] = measure
+                    # Print help
+                    print(f"Elaborating measured for opt={opt}, size={size} and range={rng}")
 
-                # Compute speedup and efficiency for the current size
-                measures[n_tx_index, -2] = compute_speedup(measures[0, MEASURE_ON_INDEX], measures[n_tx_index, MEASURE_ON_INDEX])
-                measures[n_tx_index, -1] = compute_efficiency(measures[0, MEASURE_ON_INDEX], measures[n_tx_index, MEASURE_ON_INDEX], n_th)
+                    # Compute refined measure for current size
+                    measures = np.zeros(shape=(len(ARRAY_THS), len(RAW_FIELDS)+2))
 
-            # Save processed measures
-            np.savetxt(f"measures/counting_sort/processed/size_{size}_range_{range}_opt_{opt}.csv", measures, delimiter=',', header=','.join([*RAW_FIELDS, "speedup", "efficiency"]))
+                    for nth_i, nth in enumerate(ARRAY_THS):
+                        # Now open files and evaluate results
+                        m = np.genfromtxt(f"measures/raw/algo_{algo}_opt_{opt}_size_{size}_range_{rng}_threads_{nth}.csv", delimiter=',', invalid_raise=False)
+                        m = reject_outliers(m[1:, :], measure_on_index)
+                        m = np.sum(m[:, :], axis=0) / (m.shape[0])
+                        
+                        measures[nth_i, :-2] = m
 
-# Loop for each problem size
-for size_index, size in enumerate(SIZE):
-    for range_index, range in enumerate(RANGE):
-        for opt_index, opt in enumerate(OPT_LEVEL):
+                        # Compute speedup and efficiency for the current size
+                        measures[nth_i, -2] = compute_speedup(measures[0, measure_on_index], measures[nth_i, measure_on_index])
+                        measures[nth_i, -1] = compute_efficiency(measures[0, measure_on_index], measures[nth_i, measure_on_index], nth)
 
-            # Print help
-            print("Plotting for size={}, range={}, and optimization={} - #{} of {}.".format(size, range, opt, 1+size_index*len(RANGE)*len(OPT_LEVEL)+range_index*len(OPT_LEVEL)+opt_index, len(SIZE)*len(RANGE)*len(OPT_LEVEL)))
+                    # Save processed measures
+                    np.savetxt(f"measures/processed/{RAW_FIELDS[measure_on_index].upper()}_algo_{algo}_opt_{opt}_size_{size}_range_{rng}.csv", measures, delimiter=',', header=','.join([*RAW_FIELDS, "speedup", "efficiency"]))
 
-            measure = np.genfromtxt(f"measures/counting_sort/processed/size_{size}_range_{range}_opt_{opt}.csv", delimiter=',')
 
-            # ------------- Generate plot plot -----------------
-            t = N_THREAD[1:]
-            fig, ax1 = plt.subplots()
-            ax2 = ax1.twinx()
+        # Loop for each (size, optimization) couple
+        for opt_i, opt in enumerate(ARRAY_OPT):
+            for size_i, size in enumerate(ARRAY_RC):
 
-            fig.suptitle(f'Size:{size} Range:{range} Opt:O{opt}', fontsize=15)
+                # Print help
+                print(f"Plotting measured for opt={opt}, size={size}")
 
-            ax2.plot(t, measure[:, -1][1:], 'b.--', label="Efficiency")
-            ax2.set_xlabel("#CPU")
-            ax2.set_ylabel("Efficiency", color="blue")
-            ax2.tick_params(axis='y', colors="blue")
+                t = ARRAY_THS[1:]
 
-            ax1.plot(t, t, 'r^-', label="Ideal Sp.")
-            ax1.plot(t, measure[:, -2][1:], 'g^-', label="Experimental Sp.")
-            ax1.set_xlabel("#CPU")
-            ax1.set_ylabel("Speedup")
+                fig, ax1 = plt.subplots()
+                ax2 = ax1.twinx()
 
-            fig.legend(loc='upper left', fontsize=8)
-            fig.tight_layout()
+                ax1.plot(t, t, '-', label="Ideal Sp.")
+                ax2.plot(1,1)
 
-            plt.savefig(f"measures/counting_sort/plots/size_{size}_range_{range}_opt_{opt}.png")
-            plt.close()
+                for range_i, rng in enumerate(ARRAY_RANGE):
+
+                    measures = np.genfromtxt(f"measures/processed/{RAW_FIELDS[measure_on_index].upper()}_algo_{algo}_opt_{opt}_size_{size}_range_{rng}.csv", delimiter=',', invalid_raise=False)
+                    
+                    ax1.plot(t, measures[:, -2][1:], '^-', label=f"r. {rng}")
+                    ax2.plot(t, measures[:, -1][1:], '.-')
+
+                fig.suptitle(f'{RAW_FIELDS[measure_on_index].upper()} ({algo}) -  Size:{size} Opt:O{opt}', fontsize=15)
+                ax1.set_xlabel("#CPU")
+                ax1.set_ylabel("Speedup")
+
+                ax2.set_xlabel("#CPU")
+                ax2.set_ylabel("Efficiency", color="blue")
+                ax2.tick_params(axis='y', colors="blue")
+
+                ax1.legend(loc='upper left', fontsize=8)
+                fig.tight_layout()
+
+                plt.savefig(f"measures/plots/{RAW_FIELDS[measure_on_index].upper()}_algo_{algo}_opt_{opt}_size_{size}.png")
+                plt.close()
 
 print("Script ended successfully.")
