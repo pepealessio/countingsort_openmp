@@ -34,10 +34,10 @@ __version__ = "1.0.0"
 # ------------- Don't edit up here -------------
 
 # --------- You can edit this fields -----------
-ARRAY_ALGO=[1]
+ARRAY_ALGO=[1, 2]
 ARRAY_RC=[10000, 100000, 1000000]
 ARRAY_RANGE=[1000, 10000, 100000]
-ARRAY_THS=[0, 1, 2, 4]
+ARRAY_THS=[0, 1, 2, 4, 8]
 ARRAY_OPT=[2]
 # ----------------------------------------------
 
@@ -163,6 +163,7 @@ for algo in ARRAY_ALGO:
                 ax2.tick_params(axis='y', colors="blue")
 
                 ax1.legend(loc='upper left', fontsize=8)
+                ax1.label_outer()
                 fig.tight_layout()
 
                 plt.savefig(f"measures/plots/{RAW_FIELDS[measure_on_index].upper()}_algo_{algo}_opt_{opt}_size_{size}.png")

@@ -26,12 +26,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
-NMEASURES=100
+NMEASURES=500
 
-ARRAY_ALGO=(1)
+ARRAY_ALGO=(1 2)
 ARRAY_RC=(10000 100000 1000000)
 ARRAY_RANGE=(1000 10000 100000)
-ARRAY_THS=(0 1 2 4)
+ARRAY_THS=(0 1 2 4 8)
 ARRAY_OPT=(2)
 
 TIMEFORMAT='%3U;%3E;%3S;%P'

@@ -52,7 +52,7 @@
  *          compile phase. 
  * 
  */
-#define USE_SEQUENTIAL 0
+#define USE_SEQUENTIAL 1
 
 
 int main(int argc, char const *argv[])
