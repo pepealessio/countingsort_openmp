@@ -53,10 +53,8 @@
  * @param A_len           The desidered lenght of the array. 
  * @param min_value     The minimum value inside the array.  
  * @param max_value     The maximum value inside the array.
- * @param threads       The thread to use to run this function. If you want use 
- *                      default number use 0.
  */
-void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value, int threads)
+void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value)
 {
     ELEMENT_TYPE *A_tmp = (ELEMENT_TYPE *) malloc(A_len * sizeof(ELEMENT_TYPE));
 
@@ -64,7 +62,6 @@ void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_v
     srand(6787678);
     #endif
 
-    #pragma omp parallel for num_threads(threads)
     for (size_t i = 0; i < A_len; i++)
     {
         A_tmp[i] = min_value + (rand() % (max_value - min_value + 1));

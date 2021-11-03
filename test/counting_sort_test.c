@@ -113,7 +113,7 @@ unsigned short test1()
     ELEMENT_TYPE *input;
     int len=1000, min=-43, max=234;
 
-    init_rand_vector(&input, len, min, max, 0);
+    init_rand_vector(&input, len, min, max);
     counting_sort(input, len);
 
     int ord = array_is_ordered(input, len);
@@ -165,7 +165,7 @@ unsigned short ptest1()
     ELEMENT_TYPE *input;
     int len=1000, min=-43, max=234;
 
-    init_rand_vector(&input, len, min, max, 0);
+    init_rand_vector(&input, len, min, max);
     counting_sort_parall(input, len, 0);
 
     int ord = array_is_ordered(input, len);

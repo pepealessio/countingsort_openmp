@@ -73,6 +73,14 @@ target_link_libraries(counting_sort PRIVATE util min_max counting_occurrence occ
 add_library(counting_sort_seq include/counting_sort.h source/counting_sort.c)
 target_link_libraries(counting_sort_seq PRIVATE util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
 
+# main measures
+add_executable(main_measures source/main_measure.c)
+target_link_libraries(main_measures PUBLIC OpenMP::OpenMP_C)
+target_link_libraries(main_measures PRIVATE util min_max counting_occurrence occurrences2ordarray)
+
+add_executable(main_measures_seq source/main_measure.c)
+target_link_libraries(main_measures_seq PRIVATE util util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
+
 # single algorithm measure
 add_executable(mmg source/measure/minmax_getmeasure.c)
 target_compile_options(mmg PRIVATE -O2)

@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
     
     // Init a random vector
     srand(time(NULL));
-    init_rand_vector(&A, len, -56, range-56, 0);
+    init_rand_vector(&A, len, -56, range-56);
 
     // Get min and max
     get_min_max_paral(A, len, 0, &min, &max);

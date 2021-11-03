@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
 	threads = atoi(argv[3]);
 
 	STARTTIME(1);
-	init_rand_vector(&v, len, -1003, range-1003, threads);
+	init_rand_vector(&v, len, -1003, range-1003);
 	ENDTIME(1, time_init);
 		
 	

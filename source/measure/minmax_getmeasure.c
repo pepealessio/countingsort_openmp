@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
     
     // Init a random vector
     srand(time(NULL));
-    init_rand_vector(&A, len, 0, 1000, 0);
+    init_rand_vector(&A, len, 0, 1000);
 
     // Measure for seuential algorithm
     STARTTIME(1);

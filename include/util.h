@@ -70,7 +70,7 @@
 #define ELEMENT_TYPE int
 
 
-void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value, int threads);
+void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value);
 void deinit_rand_vector(ELEMENT_TYPE *A);
 
 
