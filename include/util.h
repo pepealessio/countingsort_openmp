@@ -45,15 +45,26 @@
 
 #include <omp.h>
 #include <stdlib.h>
+#include <time.h>
 
 
-#define STARTTIME(id)                           \
-   double start_time_42_##id, end_time_42_##id; \
-   start_time_42_##id = omp_get_wtime();
+#ifdef _OPENMP
+#define STARTTIME(id)                     \
+   double start_time_##id, end_time_##id; \
+   start_time_##id = omp_get_wtime();
 
-#define ENDTIME(id, x)                 \
-   end_time_42_##id = omp_get_wtime(); \
-   x = (end_time_42_##id - start_time_42_##id)
+#define ENDTIME(id, x)              \
+   end_time_##id = omp_get_wtime(); \
+   x = (end_time_##id - start_time_##id)
+#else
+#define STARTTIME(id)                      \
+   clock_t start_time_##id, end_time_##id; \
+   start_time_##id = clock()
+
+#define ENDTIME(id, x)      \
+   end_time_##id = clock(); \
+   x = ((double)(end_time_##id - start_time_##id)) / CLOCKS_PER_SEC
+#endif
 
 
 #define ELEMENT_TYPE int
