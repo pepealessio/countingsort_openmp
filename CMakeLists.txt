@@ -74,54 +74,14 @@ add_library(counting_sort_seq include/counting_sort.h source/counting_sort.c)
 target_link_libraries(counting_sort_seq PRIVATE util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
 
 # main measures
-add_executable(main_measures source/main_measure.c)
-target_link_libraries(main_measures PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(main_measures PRIVATE util min_max counting_occurrence occurrences2ordarray)
+add_executable(main_measures_O2 source/main_measure.c)
+target_link_libraries(main_measures_O2 PUBLIC OpenMP::OpenMP_C)
+target_compile_options(main_measures_O2 PRIVATE -O2)
+target_link_libraries(main_measures_O2 PRIVATE util min_max counting_occurrence occurrences2ordarray)
 
-add_executable(main_measures_seq source/main_measure.c)
-target_link_libraries(main_measures_seq PRIVATE util util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
-
-# single algorithm measure
-add_executable(mmg source/measure/minmax_getmeasure.c)
-target_compile_options(mmg PRIVATE -O2)
-target_link_libraries(mmg PRIVATE min_max m)
-
-add_executable(mmg_seq source/measure/minmax_getmeasure.c)
-target_compile_options(mmg_seq PRIVATE -O2)
-target_link_libraries(mmg_seq PRIVATE min_max_seq m)
-
-add_executable(cog source/measure/counting_occurrance_getmeasures.c)
-target_compile_options(cog PRIVATE -O2)
-target_link_libraries(cog PRIVATE min_max counting_occurrence m)
-
-add_executable(cog_seq source/measure/counting_occurrance_getmeasures.c)
-target_compile_options(cog_seq PRIVATE -O2)
-target_link_libraries(cog_seq PRIVATE min_max_seq counting_occurrence_seq m)
-
-add_executable(oog source/measure/occurrance2ordarray_getmeasures.c)
-target_compile_options(oog PRIVATE -O2)
-target_link_libraries(oog PRIVATE min_max counting_occurrence occurrences2ordarray m)
-
-add_executable(oog_seq source/measure/occurrance2ordarray_getmeasures.c)
-target_compile_options(oog_seq PRIVATE -O2)
-target_link_libraries(oog_seq PRIVATE min_max_seq counting_occurrence_seq occurrences2ordarray_seq m)
-
-# all algortihm measure
-add_executable(main_O0 source/main.c)
-target_compile_options(main_O0 PRIVATE -O0)
-target_link_libraries(main_O0 PRIVATE counting_sort)
-
-add_executable(main_O1 source/main.c)
-target_compile_options(main_O1 PRIVATE -O1)
-target_link_libraries(main_O1 PRIVATE counting_sort)
-
-add_executable(main_O2 source/main.c)
-target_compile_options(main_O2 PRIVATE -O2)
-target_link_libraries(main_O2 PRIVATE counting_sort)
-
-add_executable(main_O3 source/main.c)
-target_compile_options(main_O3 PRIVATE -O3)
-target_link_libraries(main_O3 PRIVATE counting_sort)
+add_executable(main_measures_seq_O2 source/main_measure.c)
+target_compile_options(main_measures_seq_O2 PRIVATE -O2)
+target_link_libraries(main_measures_seq_O2 PRIVATE util util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
 
 # ---------------------------------------- TEST -----------------------------------------
 

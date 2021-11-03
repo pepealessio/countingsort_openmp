@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #include "util.h"
 
-#define occurrence2ordarray_paral occurrence2ordarray_paral_2
+#define occurrence2ordarray_paral occurrence2ordarray_paral_1
 
 void occurrence2ordarray(ELEMENT_TYPE *A, ELEMENT_TYPE min, size_t *C, size_t C_len);
 void occurrence2ordarray_paral_1(ELEMENT_TYPE *A, ELEMENT_TYPE min, size_t *C, size_t C_len, int tnum);
