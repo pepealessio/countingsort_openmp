@@ -46,6 +46,15 @@
 #include "occurrences2ordarray.h"
 
 
+/**
+ * @brief   If this variable is 1 the sequential code be used for measures. If is 0,
+ *          for the sequential measures the parallel version without OpenMP in the 
+ *          compile phase. 
+ * 
+ */
+#define USE_SEQUENTIAL 0
+
+
 int main(int argc, char const *argv[])
 {
     if (argc != 5)
@@ -68,14 +77,8 @@ int main(int argc, char const *argv[])
 
     STARTTIME(3); // Get a measure of all counting sort (and the additional if then of this script)
 
-    // Compute min and max
-    get_min_max(A, len, &min, &max);
-
-
-    nth = nth == 0 ? 1 : nth;
-
     // ----- Measure min_max -------
-    if (nth == 0)  // Measure for seuential algorithm
+    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
         STARTTIME(0);
         get_min_max(A, len, &min, &max);
@@ -94,7 +97,7 @@ int main(int argc, char const *argv[])
     size_t C_len = max - min + 1;
     size_t *C = (size_t *) calloc(C_len, sizeof(size_t));
 
-    if (nth == 0)  // Measure for seuential algorithm
+    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
         STARTTIME(1);
         count_occurrence(A, len, min, C, C_len);
@@ -114,16 +117,12 @@ int main(int argc, char const *argv[])
             count_occurrence_paral_2(A, len, min, C, C_len, nth);
             ENDTIME(1, time_occurrance);
         }
-        else
-        {
-            printf("algo_num can be 1 or 2");
-        }
     }
 
     // ------- Measure populate --------------
 
     
-    if (nth == 0)  // Measure for seuential algorithm
+    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
         STARTTIME(2);
         occurrence2ordarray(A, min, C, C_len);
@@ -142,10 +141,6 @@ int main(int argc, char const *argv[])
             STARTTIME(2);
             occurrence2ordarray_paral_2(A, min, C, C_len, nth);
             ENDTIME(2, time_populate);
-        }
-        else
-        {
-            printf("algo_num can be 1 or 2");
         }
     }
 
