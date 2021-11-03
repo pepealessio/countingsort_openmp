@@ -43,7 +43,8 @@ SCRIPTPATH=$( cd -- "$(dirname "${0}")" >/dev/null 2>&1 ; pwd -P )
 
 if [[ -d ${SCRIPTPATH}/../measures ]]
 then
-	mv ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../measures_$(date '+%Y-%m-%d_%H-%M-%S')
+	mkdir -p ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../.oldmeasures/
+	mv ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../.oldmeasures/$(date '+%Y-%m-%d_%H-%M-%S')
 fi
 
 for algo in "${ARRAY_ALGO[@]}"; do
