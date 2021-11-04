@@ -53,6 +53,10 @@
  * 
  */
 #define USE_SEQUENTIAL 1
+//#define CTOTAL
+//#define CMINMAX
+#define CCOUNT_OCCURRANCE
+//#define COCCURRANCE2ORDEREDARRAY
 
 
 int main(int argc, char const *argv[])
@@ -65,7 +69,7 @@ int main(int argc, char const *argv[])
 
     ELEMENT_TYPE *A;
     ELEMENT_TYPE min, max;
-    double time_min_max, time_occurrance, time_populate, time_algo, start, end;
+    double time_min_max=0.0, time_occurrance=0.0, time_populate=0.0, time_algo=0.0, start, end;
     size_t nth = atoi(argv[1]);
     size_t algo_num = atoi(argv[2]);
     size_t len = atoi(argv[3]);
@@ -74,20 +78,30 @@ int main(int argc, char const *argv[])
     // Init a random vector
     init_rand_vector(&A, len, -56, range-56);
 
+#ifdef CTOTAL
     STARTTIME(3); // Get a measure of all counting sort (and the additional if then of this script)
+#endif
 
     // ----- Measure min_max -------
     if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
+#ifdef CMINMAX
         STARTTIME(0);
+#endif
         get_min_max(A, len, &min, &max);
+#ifdef CMINMAX
         ENDTIME(0, time_min_max); 
+#endif
     }
     else  // Measure for parallel algorithm
     {
+#ifdef CMINMAX
         STARTTIME(0);
+#endif
         get_min_max_paral(A, len, nth, &min, &max);
+#ifdef CMINMAX
         ENDTIME(0, time_min_max);
+#endif
     }
 
     // ------ Measure count_occurrence --------
@@ -98,23 +112,35 @@ int main(int argc, char const *argv[])
 
     if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
+#ifdef CCOUNT_OCCURRANCE
         STARTTIME(1);
+#endif
         count_occurrence(A, len, min, C, C_len);
-        ENDTIME(1, time_occurrance); 
+#ifdef CCOUNT_OCCURRANCE
+        ENDTIME(1, time_occurrance);
+#endif 
     }
     else  // Measure for parallel algorithm
     {
         if (algo_num == 1)
         {
+#ifdef CCOUNT_OCCURRANCE
             STARTTIME(1);
+#endif
             count_occurrence_paral_1(A, len, min, C, C_len, nth);
+#ifdef CCOUNT_OCCURRANCE
             ENDTIME(1, time_occurrance);
+#endif
         }
         else if (algo_num == 2)
         {
+#ifdef CCOUNT_OCCURRANCE
             STARTTIME(1);
+#endif
             count_occurrence_paral_2(A, len, min, C, C_len, nth);
+#ifdef CCOUNT_OCCURRANCE
             ENDTIME(1, time_occurrance);
+#endif
         }
     }
 
@@ -123,29 +149,43 @@ int main(int argc, char const *argv[])
     
     if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
     {
+#ifdef COCCURRANCE2ORDEREDARRAY
         STARTTIME(2);
+#endif
         occurrence2ordarray(A, min, C, C_len);
+#ifdef COCCURRANCE2ORDEREDARRAY
         ENDTIME(2, time_populate); 
+#endif
     }
     else  // Measure for parallel algorithm
     {
         if (algo_num == 1)
         {
+#ifdef COCCURRANCE2ORDEREDARRAY
             STARTTIME(2);
+#endif
             occurrence2ordarray_paral_1(A, min, C, C_len, nth);
+#ifdef COCCURRANCE2ORDEREDARRAY
             ENDTIME(2, time_populate);
+#endif
         }
         else if (algo_num == 2)
         {
+#ifdef COCCURRANCE2ORDEREDARRAY
             STARTTIME(2);
+#endif
             occurrence2ordarray_paral_2(A, min, C, C_len, nth);
+#ifdef COCCURRANCE2ORDEREDARRAY
             ENDTIME(2, time_populate);
+#endif
         }
     }
 
     free(C);  // Deallocate frequence vector
 
+#ifdef CTOTAL
     ENDTIME(3, time_algo);
+#endif
 
     deinit_rand_vector(A);  // Deallocate array A
 
