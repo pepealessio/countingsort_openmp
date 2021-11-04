@@ -26,9 +26,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
-NMEASURES=500
+NMEASURES=200
 
-ARRAY_ALGO=(1 2)
+ARRAY_ALGO=(1)
 ARRAY_RC=(10000 100000 1000000)
 ARRAY_RANGE=(1000 10000 100000)
 ARRAY_THS=(0 1 2 4 8)

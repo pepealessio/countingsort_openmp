@@ -34,7 +34,7 @@ __version__ = "1.0.0"
 # ------------- Don't edit up here -------------
 
 # --------- You can edit this fields -----------
-ARRAY_ALGO=[1, 2]
+ARRAY_ALGO=[1]
 ARRAY_RC=[10000, 100000, 1000000]
 ARRAY_RANGE=[1000, 10000, 100000]
 ARRAY_THS=[0, 1, 2, 4, 8]
@@ -152,17 +152,18 @@ for algo in ARRAY_ALGO:
                     measures = np.genfromtxt(f"measures/processed/{RAW_FIELDS[measure_on_index].upper()}_algo_{algo}_opt_{opt}_size_{size}_range_{rng}.csv", delimiter=',', invalid_raise=False)
                     
                     ax1.plot(t, measures[:, -2][1:], '^-', label=f"r. {rng}")
-                    ax2.plot(t, measures[:, -1][1:], '.-')
+                    ax2.plot(t, measures[:, -1][1:], '.--')
 
                 fig.suptitle(f'{RAW_FIELDS[measure_on_index].upper()} ({algo}) -  Size:{size} Opt:O{opt}', fontsize=15)
                 ax1.set_xlabel("#CPU")
                 ax1.set_ylabel("Speedup")
 
                 ax2.set_xlabel("#CPU")
-                ax2.set_ylabel("Efficiency", color="blue")
-                ax2.tick_params(axis='y', colors="blue")
+                ax2.set_ylabel("Efficiency", color="green")
+                ax1.grid(ls='--')
+                ax2.tick_params(axis='y', colors="green")
 
-                ax1.legend(loc='upper left', fontsize=8)
+                ax1.legend(loc='upper center', fontsize=8)
                 ax1.label_outer()
                 fig.tight_layout()
 

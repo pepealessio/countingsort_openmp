@@ -63,14 +63,13 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
+    ELEMENT_TYPE *A;
     ELEMENT_TYPE min, max;
     double time_min_max, time_occurrance, time_populate, time_algo, start, end;
     size_t nth = atoi(argv[1]);
     size_t algo_num = atoi(argv[2]);
     size_t len = atoi(argv[3]);
     size_t range = atoi(argv[4]);
-
-    ELEMENT_TYPE *A;
     
     // Init a random vector
     init_rand_vector(&A, len, -56, range-56);
