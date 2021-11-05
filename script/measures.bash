@@ -26,16 +26,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
-NMEASURES=200
+NMEASURES=100
 
-ARRAY_ALGO=(1 2)
 ARRAY_RC=(1000 10000 100000 1000000 10000000)
 ARRAY_RANGE=(1000 10000 100000)
 ARRAY_THS=(0 1 2 4 8)
 ARRAY_OPT=(2)
 
 TIMEFORMAT='%3U;%3E;%3S;%P'
-
 
 trap "exit" INT
 
@@ -47,38 +45,36 @@ then
 	mv ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../.oldmeasures/$(date '+%Y-%m-%d_%H-%M-%S')
 fi
 
-for algo in "${ARRAY_ALGO[@]}"; do
-	for opt in "${ARRAY_OPT[@]}"; do
-		for size in "${ARRAY_RC[@]}"; do
-			for range in "${ARRAY_RANGE[@]}"; do
-				for ths in "${ARRAY_THS[@]}"; do
+for opt in "${ARRAY_OPT[@]}"; do
+	for size in "${ARRAY_RC[@]}"; do
+		for range in "${ARRAY_RANGE[@]}"; do
+			for ths in "${ARRAY_THS[@]}"; do
+			
+				ths_str=$(printf "%02d" $ths)
 				
-					ths_str=$(printf "%02d" $ths)
-					
-					# Output file
-					OUT_FILE=${SCRIPTPATH}/../measures/raw/algo_${algo}_opt_${opt}_size_${size}_range_${range}_threads_${ths}.csv
+				# Output file
+				OUT_FILE=${SCRIPTPATH}/../measures/raw/opt_${opt}_size_${size}_range_${range}_threads_${ths}.csv
+			
+				mkdir -p $(dirname $OUT_FILE) 2> /dev/null
 				
-					mkdir -p $(dirname $OUT_FILE) 2> /dev/null
+				echo $(basename ${OUT_FILE})
+				echo "size,range,n_threads,t_algo" > ${OUT_FILE}
+				
+				for ((i = 0 ; i < ${NMEASURES}	; i++)); do
+					if [[ ${ths} -eq 0 ]]; then
+						(./build/main_measures_seq_O${opt} ${ths} ${size} ${range} )2>&1 >> ${OUT_FILE}
+					else
+						(./build/main_measures_O${opt} ${ths} ${size} ${range} )2>&1 >> ${OUT_FILE}
+					fi
 					
-					echo $(basename ${OUT_FILE})
-					echo "size,range,n_threads,t_min_max,t_count_occurrance,t_populate,t_algo" > ${OUT_FILE}
-					
-					for ((i = 0 ; i < ${NMEASURES}	; i++)); do
-						if [[ ${ths} -eq 0 ]]; then
-							(./build/main_measures_seq_O${opt} ${ths} ${algo} ${size} ${range} )2>&1 >> ${OUT_FILE}
-						else
-							(./build/main_measures_O${opt} ${ths} ${algo} ${size} ${range} )2>&1 >> ${OUT_FILE}
-						fi
-						
-						# Progress bar
-						printf "\r> %d/%d %3.1d%% " $(expr ${i} + 1) ${NMEASURES} $(expr \( \( ${i} + 1 \) \* 100 \) / ${NMEASURES})
-						printf "#%.0s" $(seq -s " " 1 $(expr \( ${i} \* 40 \) / ${NMEASURES}))
+					# Progress bar
+					printf "\r> %d/%d %3.1d%% " $(expr ${i} + 1) ${NMEASURES} $(expr \( \( ${i} + 1 \) \* 100 \) / ${NMEASURES})
+					printf "#%.0s" $(seq -s " " 1 $(expr \( ${i} \* 40 \) / ${NMEASURES}))
 
-					done
-
-					# End Progress Bar
-					printf "\n"
 				done
+
+				# End Progress Bar
+				printf "\n"
 			done
 		done
 	done

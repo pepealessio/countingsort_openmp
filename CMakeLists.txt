@@ -41,59 +41,33 @@ target_link_libraries(util PUBLIC OpenMP::OpenMP_C)
 
 add_library(util_seq include/util.h source/util.c)
 
-# minmax lib
-add_library(min_max include/min_max.h source/min_max.c)
-target_link_libraries(min_max PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(min_max PRIVATE util)
-
-add_library(min_max_seq include/min_max.h source/min_max.c)
-target_link_libraries(min_max_seq PRIVATE util_seq)
-
-# count occurrance lib
-add_library(counting_occurrence include/counting_occurrence.h source/counting_occurrence.c)
-target_link_libraries(counting_occurrence PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(counting_occurrence PRIVATE util)
-
-add_library(counting_occurrence_seq include/counting_occurrence.h source/counting_occurrence.c)
-target_link_libraries(counting_occurrence_seq PRIVATE util_seq)
-
-# populate lib
-add_library(occurrences2ordarray include/occurrences2ordarray.h source/occurrences2ordarray.c)
-target_link_libraries(occurrences2ordarray PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(occurrences2ordarray PRIVATE util)
-
-add_library(occurrences2ordarray_seq include/occurrences2ordarray.h source/occurrences2ordarray.c)
-target_link_libraries(occurrences2ordarray_seq PRIVATE util_seq)
-
 # counting sort lib
 add_library(counting_sort include/counting_sort.h source/counting_sort.c)
 target_link_libraries(counting_sort PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(counting_sort PRIVATE util min_max counting_occurrence occurrences2ordarray)
 
 add_library(counting_sort_seq include/counting_sort.h source/counting_sort.c)
-target_link_libraries(counting_sort_seq PRIVATE util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
 
 # main measures
 add_executable(main_measures_O2 source/main_measure.c)
 target_link_libraries(main_measures_O2 PUBLIC OpenMP::OpenMP_C)
 target_compile_options(main_measures_O2 PRIVATE -O2)
-target_link_libraries(main_measures_O2 PRIVATE util min_max counting_occurrence occurrences2ordarray)
+target_link_libraries(main_measures_O2 PRIVATE util counting_sort)
 
 add_executable(main_measures_seq_O2 source/main_measure.c)
 target_compile_options(main_measures_seq_O2 PRIVATE -O2)
-target_link_libraries(main_measures_seq_O2 PRIVATE util util_seq min_max_seq counting_occurrence_seq occurrences2ordarray_seq)
+target_link_libraries(main_measures_seq_O2 PRIVATE util_seq counting_sort_seq)
 
 # ---------------------------------------- TEST -----------------------------------------
 
 enable_testing()
 
-add_executable(counting_sort_test test/counting_sort_test.c include/counting_sort.h source/counting_sort.c)
-target_link_libraries(counting_sort_test PRIVATE counting_sort)
+add_executable(counting_sort_test test/counting_sort_test.c)
+target_link_libraries(counting_sort_test PRIVATE util_seq counting_sort_seq)
 add_test(NAME counting_sort_test COMMAND counting_sort_test)
 
-add_executable(counting_sort_seq_test test/counting_sort_test.c include/counting_sort.h source/counting_sort.c)
+add_executable(counting_sort_seq_test test/counting_sort_test.c)
 target_link_libraries(counting_sort_seq_test PUBLIC OpenMP::OpenMP_C)
-target_link_libraries(counting_sort_seq_test PRIVATE counting_sort)
+target_link_libraries(counting_sort_seq_test PRIVATE util counting_sort)
 add_test(NAME counting_sort_seq_test COMMAND counting_sort_seq_test)
 
 

@@ -41,157 +41,44 @@
 #include <math.h>
 #include <string.h>
 #include "util.h"
-#include "min_max.h"
-#include "counting_occurrence.h"
-#include "occurrences2ordarray.h"
-
-
-/**
- * @brief   If this variable is 1 the sequential code be used for measures. If is 0,
- *          for the sequential measures the parallel version without OpenMP in the 
- *          compile phase. 
- * 
- */
-#define USE_SEQUENTIAL 1
-#define CTOTAL
-//#define CMINMAX
-//#define CCOUNT_OCCURRANCE
-//#define COCCURRANCE2ORDEREDARRAY
+#include "counting_sort.h"
 
 
 int main(int argc, char const *argv[])
 {
-    if (argc != 5)
+    if (argc != 4)
     {
-        printf("USAGE: %s threads algo_num array_len element_range\n", argv[0]);
-        exit(1);
+    printf("USAGE: %s threads array_len element_range\n", argv[0]);
+    exit(1);
     }
 
     ELEMENT_TYPE *A;
-    ELEMENT_TYPE min, max;
-    double time_min_max=0.0, time_occurrance=0.0, time_populate=0.0, time_algo=0.0, start, end;
+    double time_algo=0.0;
     size_t nth = atoi(argv[1]);
-    size_t algo_num = atoi(argv[2]);
-    size_t len = atoi(argv[3]);
-    size_t range = atoi(argv[4]);
-    
+    size_t len = atoi(argv[2]);
+    size_t range = atoi(argv[3]);
+
     // Init a random vector
-    init_rand_vector(&A, len, -56, range-56);
+    init_rand_vector(&A, len, -5654, range-5654);
 
-#ifdef CTOTAL
-    STARTTIME(3); // Get a measure of all counting sort (and the additional if then of this script)
-#endif
-
-    // ----- Measure min_max -------
-    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
+    if(nth==0)
     {
-#ifdef CMINMAX
-        STARTTIME(0);
-#endif
-        get_min_max(A, len, &min, &max);
-#ifdef CMINMAX
-        ENDTIME(0, time_min_max); 
-#endif
+        STARTTIME(0); 
+        counting_sort(A, len);
+        ENDTIME(0, time_algo);
     }
-    else  // Measure for parallel algorithm
+    else
     {
-#ifdef CMINMAX
-        STARTTIME(0);
-#endif
-        get_min_max_paral(A, len, nth, &min, &max);
-#ifdef CMINMAX
-        ENDTIME(0, time_min_max);
-#endif
+        STARTTIME(1); 
+        counting_sort_parall(A, len, nth);
+        ENDTIME(1, time_algo);
     }
-
-    // ------ Measure count_occurrence --------
-
-    // Allocate C array
-    size_t C_len = max - min + 1;
-    size_t *C = (size_t *) calloc(C_len, sizeof(size_t));
-
-    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
-    {
-#ifdef CCOUNT_OCCURRANCE
-        STARTTIME(1);
-#endif
-        count_occurrence(A, len, min, C, C_len);
-#ifdef CCOUNT_OCCURRANCE
-        ENDTIME(1, time_occurrance);
-#endif 
-    }
-    else  // Measure for parallel algorithm
-    {
-        if (algo_num == 1)
-        {
-#ifdef CCOUNT_OCCURRANCE
-            STARTTIME(1);
-#endif
-            count_occurrence_paral_1(A, len, min, C, C_len, nth);
-#ifdef CCOUNT_OCCURRANCE
-            ENDTIME(1, time_occurrance);
-#endif
-        }
-        else if (algo_num == 2)
-        {
-#ifdef CCOUNT_OCCURRANCE
-            STARTTIME(1);
-#endif
-            count_occurrence_paral_2(A, len, min, C, C_len, nth);
-#ifdef CCOUNT_OCCURRANCE
-            ENDTIME(1, time_occurrance);
-#endif
-        }
-    }
-
-    // ------- Measure populate --------------
-
-    
-    if (USE_SEQUENTIAL && nth == 0)  // Measure for seuential algorithm
-    {
-#ifdef COCCURRANCE2ORDEREDARRAY
-        STARTTIME(2);
-#endif
-        occurrence2ordarray(A, min, C, C_len);
-#ifdef COCCURRANCE2ORDEREDARRAY
-        ENDTIME(2, time_populate); 
-#endif
-    }
-    else  // Measure for parallel algorithm
-    {
-        if (algo_num == 1)
-        {
-#ifdef COCCURRANCE2ORDEREDARRAY
-            STARTTIME(2);
-#endif
-            occurrence2ordarray_paral_1(A, min, C, C_len, nth);
-#ifdef COCCURRANCE2ORDEREDARRAY
-            ENDTIME(2, time_populate);
-#endif
-        }
-        else if (algo_num == 2)
-        {
-#ifdef COCCURRANCE2ORDEREDARRAY
-            STARTTIME(2);
-#endif
-            occurrence2ordarray_paral_2(A, min, C, C_len, nth);
-#ifdef COCCURRANCE2ORDEREDARRAY
-            ENDTIME(2, time_populate);
-#endif
-        }
-    }
-
-    free(C);  // Deallocate frequence vector
-
-#ifdef CTOTAL
-    ENDTIME(3, time_algo);
-#endif
 
     deinit_rand_vector(A);  // Deallocate array A
 
     // Expected in output:
     // size, range, n_th, t_min_max, t_count_occurrance, t_populate, t_algo 
-    printf("%d,%d,%d,%f,%f,%f,%f\n", (int) len, (int) range, (int) nth, time_min_max, time_occurrance, time_populate, time_algo);
+    printf("%d,%d,%d,%f\n", (int) len, (int) range, (int) nth, time_algo);
 
     return EXIT_SUCCESS;   
 }

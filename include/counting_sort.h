@@ -52,8 +52,11 @@
 #endif
 
 
+#define counting_sort_parall counting_sort_parall1
+
+
 void counting_sort(ELEMENT_TYPE *v, size_t len); 
-void counting_sort_parall(ELEMENT_TYPE *v, size_t len, int threads);
+void counting_sort_parall1(ELEMENT_TYPE *v, size_t len, int threads);
 
 
 #endif /*_DEF_COUNTINGSORT_H_*/
