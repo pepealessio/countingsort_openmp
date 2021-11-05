@@ -41,7 +41,7 @@
 #include <math.h>
 #include <string.h>
 #include "util.h"
-#include "minmax.h"
+#include "min_max.h"
 #include "counting_occurrence.h"
 #include "occurrences2ordarray.h"
 
@@ -53,9 +53,9 @@
  * 
  */
 #define USE_SEQUENTIAL 1
-//#define CTOTAL
+#define CTOTAL
 //#define CMINMAX
-#define CCOUNT_OCCURRANCE
+//#define CCOUNT_OCCURRANCE
 //#define COCCURRANCE2ORDEREDARRAY
 
 

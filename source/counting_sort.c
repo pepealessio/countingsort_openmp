@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include "counting_sort.h"
 #include "util.h"
-#include "minmax.h"
+#include "min_max.h"
 #include "counting_occurrence.h"
 #include "occurrences2ordarray.h"
 

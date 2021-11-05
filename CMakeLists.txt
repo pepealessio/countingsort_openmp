@@ -42,11 +42,11 @@ target_link_libraries(util PUBLIC OpenMP::OpenMP_C)
 add_library(util_seq include/util.h source/util.c)
 
 # minmax lib
-add_library(min_max include/minmax.h source/minmax.c)
+add_library(min_max include/min_max.h source/min_max.c)
 target_link_libraries(min_max PUBLIC OpenMP::OpenMP_C)
 target_link_libraries(min_max PRIVATE util)
 
-add_library(min_max_seq include/minmax.h source/minmax.c)
+add_library(min_max_seq include/min_max.h source/min_max.c)
 target_link_libraries(min_max_seq PRIVATE util_seq)
 
 # count occurrance lib

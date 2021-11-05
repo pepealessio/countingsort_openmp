@@ -59,7 +59,7 @@ void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_v
     ELEMENT_TYPE *A_tmp = (ELEMENT_TYPE *) malloc(A_len * sizeof(ELEMENT_TYPE));
 
     #ifdef FIXED_ARRAY
-    srand(6787678);
+    srand(1256765);
     #endif
 
     for (size_t i = 0; i < A_len; i++)
