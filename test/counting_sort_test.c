@@ -42,6 +42,8 @@
 
 short int array_is_ordered(ELEMENT_TYPE *v, size_t len);
 short int array_is_equal(ELEMENT_TYPE *v1, ELEMENT_TYPE *v2, size_t len);
+unsigned short empty_test();
+unsigned short pempty_test();
 unsigned short test1();
 unsigned short test2();
 unsigned short test3();
@@ -52,10 +54,12 @@ unsigned short ptest3();
 
 int main(int argc, char const *argv[])
 {
+    assert(empty_test());
     assert(test1());
     assert(test2());
     assert(test3());
 
+    assert(pempty_test());
     assert(ptest1());
     assert(ptest2());
     assert(ptest3());
@@ -100,6 +104,38 @@ short int array_is_equal(ELEMENT_TYPE *v1, ELEMENT_TYPE *v2, size_t len)
             return 0;
         }
     }
+    return 1;
+}
+
+/**
+ * @brief Try to use counting sort with 0 lenght array.
+ * 
+ * @return unsigned short  1 if no errors happens, otherwise 0.
+ */
+unsigned short empty_test()
+{
+    ELEMENT_TYPE input[] = {};
+    int len=0;
+
+    // Just control if an error happens.
+    counting_sort(input, len);
+
+    return 1;
+}
+
+/**
+ * @brief Try to use counting sort with 0 lenght array. But parallel.
+ * 
+ * @return unsigned short  1 if no errors happens, otherwise 0.
+ */
+unsigned short pempty_test()
+{
+    ELEMENT_TYPE input[] = {};
+    int len=0;
+
+    // Just control if an error happens.
+    counting_sort_parall(input, len, 0);
+
     return 1;
 }
 

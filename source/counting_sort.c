@@ -118,6 +118,12 @@ void counting_sort(ELEMENT_TYPE *A, size_t A_len)
  */
 void counting_sort_parall1(ELEMENT_TYPE *A, size_t A_len, int threads) 
 {
+    // Empty or lenght=1 array
+    if (A_len < 2)
+    {
+        return;
+    }
+
     ELEMENT_TYPE min, max;
     size_t *C;
     size_t C_len;
