@@ -58,6 +58,12 @@
  */
 void counting_sort(ELEMENT_TYPE *A, size_t A_len) 
 {
+    // Empty or lenght=1 array
+    if (A_len < 2)
+    {
+        return;
+    }
+
     ELEMENT_TYPE min, max;
     size_t *C;
     size_t C_len, k;
