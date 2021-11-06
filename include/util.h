@@ -45,21 +45,41 @@
 
 #include <omp.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 
-#define STARTTIME(id)                           \
-   double start_time_42_##id, end_time_42_##id; \
-   start_time_42_##id = omp_get_wtime();
+// #ifdef _OPENMP
+// #define STARTTIME(id)                     \
+//    double start_time_##id, end_time_##id; \
+//    start_time_##id = omp_get_wtime();
+
+// #define ENDTIME(id, x)              \
+//    end_time_##id = omp_get_wtime(); \
+//    x = (end_time_##id - start_time_##id)
+// #else
+// #define STARTTIME(id)                      \
+//    clock_t start_time_##id, end_time_##id; \
+//    start_time_##id = clock()
+
+// #define ENDTIME(id, x)      \
+//    end_time_##id = clock(); \
+//    x = ((double)(end_time_##id - start_time_##id)) / CLOCKS_PER_SEC
+// #endif
+
+#define STARTTIME(id)                             \
+   struct timeval start_time_##id, end_time_##id; \
+   gettimeofday(&start_time_##id, NULL);
 
 #define ENDTIME(id, x)                 \
-   end_time_42_##id = omp_get_wtime(); \
-   x = (end_time_42_##id - start_time_42_##id)
+   gettimeofday(&end_time_##id, NULL); \
+   x = ((end_time_##id.tv_sec  - start_time_##id.tv_sec) * 1000000u +  end_time_##id.tv_usec - start_time_##id.tv_usec) / 1.e6;
 
 
 #define ELEMENT_TYPE int
 
 
-void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value, int threads);
+void init_rand_vector(ELEMENT_TYPE **A, size_t A_len, long min_value, long max_value);
 void deinit_rand_vector(ELEMENT_TYPE *A);
 
 

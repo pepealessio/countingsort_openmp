@@ -25,12 +25,10 @@
 // along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @file    counting_occurrence.h
+ * @file    main_measure.c
  * @author  Alessio Pepe         (a.pepe108@studenti.unisa.it)
  * @author  Paolo Mansi          (p.mansi5@studenti.unisa.it)
- * @author  Teresa Tortorella    (t.tortorella3@studenti.unisa.it)
- * @brief   This file contains the function prototypes to get the occurrane of each
- *          element in an array.  
+ * @author  Teresa Tortorella    (t.tortorella3@studenti.unisa.it) 
  * @version 0.1
  * @date 2021-11-01
  * 
@@ -38,17 +36,49 @@
  * 
  */
 
-#ifndef _INC_COUNTING_OCCURRENCE_
-#define _INC_COUNTING_OCCURRENCE_
-
-#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <math.h>
+#include <string.h>
 #include "util.h"
+#include "counting_sort.h"
 
-#define count_occurrence_paral count_occurrence_paral_1
 
-void count_occurrence(ELEMENT_TYPE *A, size_t A_len, ELEMENT_TYPE min, size_t *C, size_t C_len);
-void count_occurrence_paral_1(ELEMENT_TYPE *A, size_t A_len, ELEMENT_TYPE min, size_t *C, size_t C_len, int tnum);
-void count_occurrence_paral_2(ELEMENT_TYPE *A, size_t A_len, ELEMENT_TYPE min, size_t *C, size_t C_len, int tnum);
+int main(int argc, char const *argv[])
+{
+    if (argc != 4)
+    {
+    printf("USAGE: %s threads array_len element_range\n", argv[0]);
+    exit(1);
+    }
 
-#endif /*_INC_COUNTING_OCCURRENCE_*/
+    ELEMENT_TYPE *A;
+    double time_algo=0.0;
+    size_t nth = atoi(argv[1]);
+    size_t len = atoi(argv[2]);
+    size_t range = atoi(argv[3]);
 
+    // Init a random vector
+    init_rand_vector(&A, len, -5654, range-5654);
+
+    if(nth==0)
+    {
+        STARTTIME(0); 
+        counting_sort(A, len);
+        ENDTIME(0, time_algo);
+    }
+    else
+    {
+        STARTTIME(1); 
+        counting_sort_parall(A, len, nth);
+        ENDTIME(1, time_algo);
+    }
+
+    deinit_rand_vector(A);  // Deallocate array A
+
+    // Expected in output:
+    // size, range, n_th, t_min_max, t_count_occurrance, t_populate, t_algo 
+    printf("%d,%d,%d,%f\n", (int) len, (int) range, (int) nth, time_algo);
+
+    return EXIT_SUCCESS;   
+}

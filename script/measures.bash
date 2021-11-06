@@ -26,44 +26,51 @@
 # You should have received a copy of the GNU General Public License
 # along with Counting_Sort.  If not, see <http://www.gnu.org/licenses/>.
 
-NMEASURES=150
 
-ARRAY_RC=(10000 100000 1000000 1000000)
-ARRAY_RANGE=(100 1000)
-ARRAY_THS=(0 1 2 4 8 16)
+# ---------- Edit this section ---------------------
+NMEASURES=100
+
+ARRAY_RC=(1000 10000 100000 1000000 10000000)
+ARRAY_RANGE=(1000 10000 100000)
+ARRAY_THS=(0 1 2 4 8)
+ARRAY_OPT=(2)
+# ---------- Edit this section ---------------------
+
+
 TIMEFORMAT='%3U;%3E;%3S;%P'
-ARRAY_OPT=(0 1 2 3)
 
 trap "exit" INT
 
 SCRIPTPATH=$( cd -- "$(dirname "${0}")" >/dev/null 2>&1 ; pwd -P )
 
-
-if [[ -d ${SCRIPTPATH}/../measures/counting_sort ]]
+if [[ -d ${SCRIPTPATH}/../measures ]]
 then
-	mv ${SCRIPTPATH}/../measures/counting_sort ${SCRIPTPATH}/../measures/counting_sort_$(date '+%Y-%m-%d_%H-%M-%S')
+	mkdir -p ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../.oldmeasures/
+	mv ${SCRIPTPATH}/../measures ${SCRIPTPATH}/../.oldmeasures/$(date '+%Y-%m-%d_%H-%M-%S')
 fi
 
-for size in "${ARRAY_RC[@]}"; do
-	for range in "${ARRAY_RANGE[@]}"; do
-		for ths in "${ARRAY_THS[@]}"; do
-			for opt in "${ARRAY_OPT[@]}"; do
+for opt in "${ARRAY_OPT[@]}"; do
+	for size in "${ARRAY_RC[@]}"; do
+		for range in "${ARRAY_RANGE[@]}"; do
+			for ths in "${ARRAY_THS[@]}"; do
 			
 				ths_str=$(printf "%02d" $ths)
 				
 				# Output file
-				OUT_FILE=${SCRIPTPATH}/../measures/counting_sort/raw/size_${size}_range_${range}_threads_${ths}_opt_${opt}.csv
+				OUT_FILE=${SCRIPTPATH}/../measures/raw/opt_${opt}_size_${size}_range_${range}_threads_${ths}.csv
 			
 				mkdir -p $(dirname $OUT_FILE) 2> /dev/null
 				
-				echo "$(date '+%Y-%m-%d_%H-%M-%S')\n${ARRAY_RC[@]}\n${ARRAY_RANGE[@]}\n${ARRAY_THS[@]}\n${ARRAY_OPT[@]}" > "${SCRIPTPATH}/../measures/counting_sort/raw/info.txt"
-				
 				echo $(basename ${OUT_FILE})
-				echo "len,range,threads,time_init,time_sort,time_user,time_elapsed,time_sys,p_cpu" > ${OUT_FILE}
+				echo "size,range,n_threads,t_algo" > ${OUT_FILE}
 				
 				for ((i = 0 ; i < ${NMEASURES}	; i++)); do
-					(time ./build/main_O${opt} ${size} ${range} ${ths} )2>&1 | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/;/g' -e 's/,/./g' -e 's/;/,/g' >> ${OUT_FILE}
-
+					if [[ ${ths} -eq 0 ]]; then
+						(./build/main_measures_seq_O${opt} ${ths} ${size} ${range} )2>&1 >> ${OUT_FILE}
+					else
+						(./build/main_measures_O${opt} ${ths} ${size} ${range} )2>&1 >> ${OUT_FILE}
+					fi
+					
 					# Progress bar
 					printf "\r> %d/%d %3.1d%% " $(expr ${i} + 1) ${NMEASURES} $(expr \( \( ${i} + 1 \) \* 100 \) / ${NMEASURES})
 					printf "#%.0s" $(seq -s " " 1 $(expr \( ${i} \* 40 \) / ${NMEASURES}))
@@ -76,4 +83,3 @@ for size in "${ARRAY_RC[@]}"; do
 		done
 	done
 done
-
