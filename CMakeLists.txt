@@ -48,6 +48,24 @@ target_link_libraries(counting_sort PUBLIC OpenMP::OpenMP_C)
 add_library(counting_sort_seq include/counting_sort.h source/counting_sort.c)
 
 # main measures
+add_executable(main_measures_O0 source/main_measure.c)
+target_link_libraries(main_measures_O0 PUBLIC OpenMP::OpenMP_C)
+target_compile_options(main_measures_O0 PRIVATE -O0)
+target_link_libraries(main_measures_O0 PRIVATE util counting_sort)
+
+add_executable(main_measures_seq_O0 source/main_measure.c)
+target_compile_options(main_measures_seq_O0 PRIVATE -O0)
+target_link_libraries(main_measures_seq_O0 PRIVATE util_seq counting_sort_seq)
+
+add_executable(main_measures_O1 source/main_measure.c)
+target_link_libraries(main_measures_O1 PUBLIC OpenMP::OpenMP_C)
+target_compile_options(main_measures_O1 PRIVATE -O1)
+target_link_libraries(main_measures_O1 PRIVATE util counting_sort)
+
+add_executable(main_measures_seq_O1 source/main_measure.c)
+target_compile_options(main_measures_seq_O1 PRIVATE -O1)
+target_link_libraries(main_measures_seq_O1 PRIVATE util_seq counting_sort_seq)
+
 add_executable(main_measures_O2 source/main_measure.c)
 target_link_libraries(main_measures_O2 PUBLIC OpenMP::OpenMP_C)
 target_compile_options(main_measures_O2 PRIVATE -O2)
@@ -56,6 +74,15 @@ target_link_libraries(main_measures_O2 PRIVATE util counting_sort)
 add_executable(main_measures_seq_O2 source/main_measure.c)
 target_compile_options(main_measures_seq_O2 PRIVATE -O2)
 target_link_libraries(main_measures_seq_O2 PRIVATE util_seq counting_sort_seq)
+
+add_executable(main_measures_O3 source/main_measure.c)
+target_link_libraries(main_measures_O3 PUBLIC OpenMP::OpenMP_C)
+target_compile_options(main_measures_O3 PRIVATE -O3)
+target_link_libraries(main_measures_O3 PRIVATE util counting_sort)
+
+add_executable(main_measures_seq_O3 source/main_measure.c)
+target_compile_options(main_measures_seq_O3 PRIVATE -O3)
+target_link_libraries(main_measures_seq_O3 PRIVATE util_seq counting_sort_seq)
 
 # ---------------------------------------- TEST -----------------------------------------
 
@@ -73,23 +100,23 @@ add_test(NAME counting_sort_seq_test COMMAND counting_sort_seq_test)
 
 
 # # ----------------------------- DOCS -------------------------------------
-# option(BUILD_DOC "Build documentation" ON)
+option(BUILD_DOC "Build documentation" ON)
 
-# # check if Doxygen is installed
-# find_package(Doxygen REQUIRED dot)
-# if (DOXYGEN_FOUND)
-#     # set input and output files
-#     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
-#     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/docs)
+# check if Doxygen is installed
+find_package(Doxygen REQUIRED dot)
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/docs)
 
-#     # request to configure the file
-#     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-#     message("Doxygen build started")
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
 
-#     # note the option ALL which allows to build the docs together with the application
-#     add_custom_target( doc_doxygen ALL
-#         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-#         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#         COMMENT "Generating API documentation with Doxygen"
-#         VERBATIM )
-# endif()
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target( doc_doxygen ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM )
+endif()
