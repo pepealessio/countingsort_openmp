@@ -49,7 +49,6 @@ RAW_FIELDS = ['size', 'range', 'n_th', 't_algo']
 import matplotlib.pyplot as plt
 import os
 import shutil
-import sys
 import numpy as np
 
 
