@@ -31,7 +31,7 @@
  * @author  Teresa Tortorella    (t.tortorella3@studenti.unisa.it)
  * @brief   Counting sort alghorithm in serial and parallelized (OpenMP) version. Serial
  *          version are inspired at https://it.wikipedia.org/wiki/Counting_sort.   
- * @version 0.1
+ * @version 1.0.0
  * @date 2021-11-01
  * 
  * @copyright Copyright (c) 2021
