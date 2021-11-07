@@ -32,7 +32,7 @@
  * @brief   This file contains utility function prototypes used to work with 
  *          random array and the declaration of the type you want use in the 
  *          counting sort algorithm.  
- * @version 0.1
+ * @version 1.0.0
  * @date 2021-11-01
  * 
  * @copyright Copyright (c) 2021
@@ -48,34 +48,27 @@
 #include <time.h>
 #include <sys/time.h>
 
-
-// #ifdef _OPENMP
-// #define STARTTIME(id)                     \
-//    double start_time_##id, end_time_##id; \
-//    start_time_##id = omp_get_wtime();
-
-// #define ENDTIME(id, x)              \
-//    end_time_##id = omp_get_wtime(); \
-//    x = (end_time_##id - start_time_##id)
-// #else
-// #define STARTTIME(id)                      \
-//    clock_t start_time_##id, end_time_##id; \
-//    start_time_##id = clock()
-
-// #define ENDTIME(id, x)      \
-//    end_time_##id = clock(); \
-//    x = ((double)(end_time_##id - start_time_##id)) / CLOCKS_PER_SEC
-// #endif
-
+/**
+ * @brief Use start_time with an non used id to start measure time in that point of the code.
+ * 
+ */
 #define STARTTIME(id)                             \
    struct timeval start_time_##id, end_time_##id; \
    gettimeofday(&start_time_##id, NULL);
 
+/**
+ * @brief Use end_tipe with a previous used id to stop measure time in that point of the code.
+ *        The value of time will be saved in x.
+ * 
+ */
 #define ENDTIME(id, x)                 \
    gettimeofday(&end_time_##id, NULL); \
    x = ((end_time_##id.tv_sec  - start_time_##id.tv_sec) * 1000000u +  end_time_##id.tv_usec - start_time_##id.tv_usec) / 1.e6;
 
-
+/**
+ * @brief Define the tipe of element this code want work on.
+ * 
+ */
 #define ELEMENT_TYPE int
 
 

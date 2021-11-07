@@ -30,7 +30,7 @@
  * @author  Paolo Mansi          (p.mansi5@studenti.unisa.it)
  * @author  Teresa Tortorella    (t.tortorella3@studenti.unisa.it)
  * @brief   This file contains utility function used to work with random array.  
- * @version 0.1
+ * @version 1.0.0
  * @date 2021-11-01
  * 
  * @copyright Copyright (c) 2021
@@ -40,7 +40,7 @@
 #include "util.h"
 
 /**
- * @brief Comment this line if you want generate every time a random array.
+ * @brief Comment this line if you want generate every time a pseudo-random array.
  * 
  */
 #define FIXED_ARRAY

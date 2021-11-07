@@ -31,7 +31,7 @@
  * @author  Teresa Tortorella    (t.tortorella3@studenti.unisa.it)
  * @brief   Counting sort alghorithm in serial and parallelized (OpenMP) version. Serial
  *          version are inspired at https://it.wikipedia.org/wiki/Counting_sort.   
- * @version 0.1
+ * @version 1.0.0
  * @date 2021-11-01
  * 
  * @copyright Copyright (c) 2021
@@ -42,11 +42,34 @@
 #include "counting_sort.h"
 #include "util.h"
 
-
+/**
+ * @brief If defined, use the first minmax alghorithm described in the report.
+ * 
+ */
 #define MINMAX_1
+
+/**
+ * @brief If defined, use the first count_occurrance alghorithm described in the report.
+ * 
+ */
 #define COUNT_OCCURRANCE_1
+
+/**
+ * @brief If defined, use the second count_occurrance alghorithm described in the report.
+ * 
+ */
 //#define COUNT_OCCURRANCE_2
+
+/**
+ * @brief If defined, use the first populate alghorithm described in the report.
+ * 
+ */
 #define POPULATE_1
+
+/**
+ * @brief If defined, use the second populate alghorithm described in the report.
+ * 
+ */
 //#define POPULATE_2
 
 
